@@ -17,6 +17,7 @@ import scipy.ndimage as ndi
 import pandas as pd 
 
 
+
 def img_analysis_pipeline(dirpath, filename):
     """_summary_
 
@@ -30,6 +31,9 @@ def img_analysis_pipeline(dirpath, filename):
 
     ## Loading Image Data
 
+    print(f"Processing {filename}")
+
+
     # join function to combine strings and take care of slashes 
     from os.path import join
 
@@ -40,7 +44,6 @@ def img_analysis_pipeline(dirpath, filename):
 
     # Use imread function to load image as ndarray 
     img = imread(filepath)
-    print(f"Image shape for {filename}: {img.shape}")
     
 
 
@@ -78,30 +81,38 @@ def img_analysis_pipeline(dirpath, filename):
     masked_img_c1 = img_c1_smooth * img_c1_mask
 
     # Measure fluorescence intensity for each channel
-    intensity_c0 = masked_img_c0.sum()
-    intensity_c1 = masked_img_c1.sum()
+    total_intensity_c0 = masked_img_c0.sum()
+    total_intensity_c1 = masked_img_c1.sum()
 
     # Calculate the mask area (number of non-zero pixels in the mask)
     area_c0 = img_c0_mask.sum()
     area_c1 = img_c1_mask.sum()
 
     # Normalize intensity by mask area
-    intensity_per_area_c0 = intensity_c0 / area_c0
-    intensity_per_area_c1 = intensity_c1 / area_c1
+    mfi_c0 = total_intensity_c0 / area_c0
+    mfi_c1 = total_intensity_c1 / area_c1
 
     # Store results in a DataFrame
     results_df = pd.DataFrame({
-        "filename": [filename],
-        "intensity_c0": [intensity_c0],
-        "intensity_c1": [intensity_c1],
+        "filename": [filename],     
+        "total_intensity_c0": [total_intensity_c0],
+        "total_intensity_c1": [total_intensity_c1],
         "area_c0": [area_c0],
         "area_c1": [area_c1],
-        "intensity_per_area_c0": [intensity_per_area_c0],
-        "intensity_per_area_c1": [intensity_per_area_c1]
+        "mfi_c0": [mfi_c0],
+        "mfi_c1": [mfi_c1]
     })
 
-    print(f"Processing {filename}: intensity_c0={intensity_c0}, intensity_c1={intensity_c1}")
+    from matplotlib.pyplot import subplots, show
+    # Display the masked images
+    fig, axs = subplots(1, 2, figsize=(10, 7))
+    axs[0].imshow(masked_img_c0, interpolation='none', cmap='gray')
+    axs[1].imshow(masked_img_c1, interpolation='none', cmap='gray')
+    axs[0].set_title(f'{filename} C0 Masked Image')
+    axs[1].set_title(f'{filename} C1 Masked Image')
+    show()
 
+    
 
 
 
