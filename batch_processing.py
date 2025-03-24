@@ -48,8 +48,8 @@ def img_analysis_pipeline(dirpath, filename):
 
 
     ## Split image into seperate channels 
-    img_c0 = img[0, :, :]
-    img_c1 = img[1, :, :]
+    img_c0 = img[:, :, 0]
+    img_c1 = img[:, :, 1]
 
 
     ## Guassian Smoothing
