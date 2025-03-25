@@ -74,7 +74,8 @@ def img_analysis_pipeline(dirpath, filename):
     # img_c1_thresh = threshold_li(img_c1_smooth)
     # Manual
     img_c0_thresh = 130
-    img_c1_thresh = 170
+    img_c1_thresh = 5000
+
     # Binarise the image 
     img_c0_mask = img_c0_smooth > img_c0_thresh
     img_c1_mask = img_c1_smooth > img_c0_thresh
