@@ -48,8 +48,9 @@ def img_analysis_pipeline(dirpath, filename):
 
 
     ## Split image into seperate channels 
-    img_c0 = img[:, :, 0]
-    img_c1 = img[:, :, 1]
+    # Subtract background found in image j 
+    img_c0 = img[:, :, 0] 
+    img_c1 = img[:, :, 1] 
 
 
     ## Guassian Smoothing
@@ -67,11 +68,13 @@ def img_analysis_pipeline(dirpath, filename):
     # Import threshold function
     from skimage.filters.thresholding import threshold_li
 
-    # Apply Li Threshold
-    img_c0_thresh = threshold_li(img_c0_smooth)
-    img_c1_thresh = threshold_li(img_c1_smooth)
-
-
+    # Apply Threshold
+    # Li
+    # img_c0_thresh = threshold_li(img_c0_smooth)
+    # img_c1_thresh = threshold_li(img_c1_smooth)
+    # Manual
+    img_c0_thresh = 130
+    img_c1_thresh = 170
     # Binarise the image 
     img_c0_mask = img_c0_smooth > img_c0_thresh
     img_c1_mask = img_c1_smooth > img_c0_thresh
@@ -105,7 +108,7 @@ def img_analysis_pipeline(dirpath, filename):
 
     from matplotlib.pyplot import subplots, show
     # Display the masked images
-    fig, axs = subplots(1, 2, figsize=(10, 7))
+    fig, axs = subplots(nrows=1, ncols=2, figsize=(20, 10))
     axs[0].imshow(masked_img_c0, interpolation='none', cmap='gray')
     axs[1].imshow(masked_img_c1, interpolation='none', cmap='gray')
     axs[0].set_title(f'{filename} C0 Masked Image')
